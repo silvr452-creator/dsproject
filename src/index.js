@@ -1,12 +1,23 @@
 import 'dotenv/config';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, Collection , GatewayIntentBits } from 'discord.js';
+import { loadCommands } from './loaders/loadCommands.js';
+import { loadEvents } from './loaders/loadEvents.js';
+
+if (!process.env.DISCORD_TOKEN) {  
+  throw new Error('DISCORD_TOKEN не найден в .env');  
+}
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
-client.once('ready', () => {
-  console.log(`Бот запущен как ${client.user.tag}`);
-});
+client.commands = new Collection();
 
-client.login(process.env.DISCORD_TOKEN);
+// client.once('ready', () => {
+//   console.log(`Бот запущен как ${client.user.tag}`);
+// });
+
+await loadCommands(client);
+await loadEvents(client);
+
+client.login(process.env.DISCORD_TOKEN).catch(console.error);

@@ -1,13 +1,68 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum PlayerStatus {
+  ACTIVE
+  LOW_ACTIVITY
+  UNDER_REVIEW
+  AWAY
+  CANDIDATE_FOR_REMOVAL
+}
+
+model Player {
+  id             String       @id @default(cuid())
+  discordUserId  String       @unique
+  nickname       String
+  joinedAt       DateTime     @default(now())
+  level          Int          @default(0)
+  totalExp       Int          @default(0)
+  rating7d       Int          @default(0)
+  rating30d      Int          @default(0)
+  ratingAll      Int          @default(0)
+  status         PlayerStatus @default(ACTIVE)
+  lastActivityAt DateTime?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  profile        Profile?
+  channels       PlayerChannels?
+}
+
+model Profile {
+  id                 String   @id @default(cuid())
+  playerId           String   @unique
+  gearText           String?
+  gearImageUrl       String?
+  canPlayAt          String?
+  cannotPlayAt       String?
+  timezone           String?
+  playStyle          String?
+  canPlayTournaments Boolean?
+  hasMicrophone      Boolean?
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  player             Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model PlayerChannels {
+  id                String   @id @default(cuid())
+  playerId          String   @unique
+  categoryChannelId String?
+  menuChannelId     String?
+  questsChannelId   String?
+  rulesChannelId    String?
+  warningsChannelId String?
+  awayChannelId     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  player            Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 }

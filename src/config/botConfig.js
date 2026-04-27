@@ -1,7 +1,7 @@
 export const botConfig = {
     roles: {
-        adminRolesIds: [],
-        moderatorRolesIds: [],
+        adminRolesIds: ['1470155921131962449'],
+        moderatorRolesIds: ['1470154707056988170'],
     },
 
     profileCategory: {

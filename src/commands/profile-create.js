@@ -5,7 +5,7 @@ import {
     SlashCommandBuilder,
 } from 'discord.js';
 
-import { ButtonIds } from '../../config/constants';
+import { ButtonIds } from '../config/constants.js';
 
 export const data = new SlashCommandBuilder()
     .setName('profile-create')
@@ -25,3 +25,8 @@ export async function execute(interaction) {
     });
     
 }
+
+export default {
+    data,
+    execute,
+};

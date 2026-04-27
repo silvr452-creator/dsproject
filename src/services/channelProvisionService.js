@@ -56,7 +56,7 @@ export async function createPlayerProfileChannels({guild, member, player}) {
         permissionOverwrites,
     });
 
-    const playerChannels = await prisma.playerChannel.create({
+    const playerChannels = await prisma.playerChannels.create({
         data: {
             playerId: player.id,
             categoryChannelId: category.id,

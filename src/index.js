@@ -13,10 +13,6 @@ const client = new Client({
 
 client.commands = new Collection();
 
-// client.once('ready', () => {
-//   console.log(`Бот запущен как ${client.user.tag}`);
-// });
-
 await loadCommands(client);
 await loadEvents(client);
 

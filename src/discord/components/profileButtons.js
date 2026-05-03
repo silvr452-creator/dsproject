@@ -6,11 +6,23 @@ import {
 
 import { ButtonIds } from '../../config/constants.js';
 
-export function createFillProfileButton() {
+export function createFillProfileButton(isProfileFilled = false) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(ButtonIds.FILL_PROFILE)
-            .setLabel('Заполнить профиль')
-            .setStyle(ButtonStyle.Success),
+            .setCustomId(
+                isProfileFilled
+                    ? ButtonIds.UPDATE_PROFILE
+                    : ButtonIds.FILL_PROFILE
+            )
+            .setLabel(
+                isProfileFilled
+                    ? 'Обновить профиль'
+                    : 'Заполнить профиль'
+            )
+            .setStyle(
+                isProfileFilled
+                    ? ButtonStyle.Primary
+                    : ButtonStyle.Success
+            ),
     );
 }

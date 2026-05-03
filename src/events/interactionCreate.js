@@ -1,12 +1,16 @@
 import { Events } from 'discord.js';
-import { ButtonIds, ModalIds } from '../config/constants.js';
 import {
   getOrCreatePlayer,
   updateFirstUserProfile,
 } from '../services/profileServices.js';
+import { ButtonIds, ModalIds } from '../config/constants.js';
 import { createPlayerProfileChannels } from '../services/channelProvisionService.js';
 import { createFillProfileButton } from '../discord/components/profileButtons.js';
 import { createFillProfileModal } from '../discord/components/profileModal.js';
+import { createProfileEmbed } from '../discord/embeds/profileEmbed.js';
+import { getProfileByDiscord } from '../services/profileServices.js';
+import { updateProfileMessage } from '../services/profileMessageService.js';
+import { prisma } from '../../prisma/client.js';
 
 export default {
   name: Events.InteractionCreate,
@@ -61,6 +65,8 @@ export default {
 };
 
 async function handleCreateProfileButton(interaction) {
+  
+  
   await interaction.deferReply({
     ephemeral: true,
   });
@@ -83,7 +89,7 @@ async function handleCreateProfileButton(interaction) {
     player,
   });
 
-  const fillProfileButton = createFillProfileButton();
+  const fillProfileButton = createFillProfileButton(false);
 
   await menuChannel.send({
     content: [
@@ -93,6 +99,22 @@ async function handleCreateProfileButton(interaction) {
       'Для начала заполни информацию о себе.',
     ].join('\n'),
     components: [fillProfileButton],
+  });
+
+  const updatedPlayer = await getProfileByDiscord(interaction.user.id);
+
+  const profileMessage = await menuChannel.send({
+    content: 'Текущий профиль:',
+    embeds: [createProfileEmbed(updatedPlayer)],
+  });
+
+  await prisma.playerChannels.update({
+    where: {
+      playerId: player.id,
+    },
+    data: {
+      profileMessageId: profileMessage.id,
+    },
   });
 
   await interaction.editReply({
@@ -113,18 +135,17 @@ async function handleFillProfileModal(interaction) {
   const gearText = interaction.fields.getTextInputValue('gearText');
   const canPlayAt = interaction.fields.getTextInputValue('canPlayAt');
   const timezone = interaction.fields.getTextInputValue('timezone');
-  const playStyle = interaction.fields.getTextInputValue('playStyle');
-  const notes = interaction.fields.getTextInputValue('notes') || null;
 
   await updateFirstUserProfile(player.id, {
     gearText,
     canPlayAt,
     timezone,
-    playStyle,
-    notes,
   });
+
+  await updateProfileMessage(interaction.guild, interaction.user.id);
 
   await interaction.editReply({
     content: 'Профиль заполнен и сохранен.',
+    components: [createFillProfileButton(true)],
   });
 }

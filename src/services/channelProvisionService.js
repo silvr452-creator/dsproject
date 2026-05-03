@@ -43,6 +43,7 @@ export async function createPlayerProfileChannels({guild, member, player}) {
     }))
     ];
 
+
     const category = await guild.channels.create({
         name: categoryName,
         type: ChannelType.GuildCategory,

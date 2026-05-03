@@ -31,26 +31,10 @@ export function createFillProfileModal() {
         .setRequired(true)
         .setPlaceholder('Например: МСК');
 
-  const playStyleInput = new TextInputBuilder()
-        .setCustomId('playStyle')
-        .setLabel('Стиль игры')
-        .setStyle(TextInputStyle.Short)
-        .setRequired(true)
-        .setPlaceholder('Например: активный, спокойный, командный');
-
-  const notesInput = new TextInputBuilder()
-        .setCustomId('notes')
-        .setLabel('Дополнительно')
-        .setStyle(TextInputStyle.Paragraph)
-        .setRequired(false)
-        .setPlaceholder('Любая дополнительная информация');
-
     modal.addComponents(
         new ActionRowBuilder().addComponents(gearInput),
         new ActionRowBuilder().addComponents(canPlayAtInput),
         new ActionRowBuilder().addComponents(timezoneInput),
-        new ActionRowBuilder().addComponents(playStyleInput),
-        new ActionRowBuilder().addComponents(notesInput),
     );
     return modal;
 }

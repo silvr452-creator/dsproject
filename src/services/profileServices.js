@@ -38,3 +38,13 @@ export async function updateFirstUserProfile(playerId, data) {
         data,
     });
 }
+
+export async function getProfileByDiscord(discordUserId) {
+    return prisma.player.findUnique({
+        where: {discordUserId},
+        include: {
+            profile: true,
+            channels: true,
+        },
+    });
+}
